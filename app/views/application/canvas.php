@@ -1,0 +1,1 @@
+<canvas id="mychart1" class="mychart1 chartjs-render-monitor" width="800" height="406"></canvas>

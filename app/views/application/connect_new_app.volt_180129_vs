@@ -1,0 +1,27 @@
+
+<img src="/images/7120148c9dd1e84573d55033011ff886a6aa1dfd.png" class="col-sm-6" height="400">
+
+<?= $t->_("add_application_para");?>
+<form class="form-horizontal col-sm-6" action="/application/single_app_no_data" method="post">
+	<div class="form-group">
+	  <label for="applicationname">Application Name:</label>
+	  <input type="text" class="form-control" id="applicationname" placeholder="Enter applicationname" name="applicationname">
+	</div>
+	<div class="form-group">
+	  <label for="binaryname">Android binary name:</label>
+	  <input type="text" class="form-control" id="binaryname" placeholder="Enter binary name" name="binaryname">
+	</div>
+	<div class="form-group">
+	  <label for="apitype">API type:</label>
+	  <!-- <input type="text" class="form-control" id="apitype" placeholder="Enter api type" name="apitype"> -->
+	  <input list="apitype" name="apitype">
+		<datalist id="apitype">
+		    <option value="Native Application"/>
+		    <option value="Hosted Application">
+		</datalist>
+	</div>
+	<div class="terms">
+	  <label>By continuing you accept our terms and conditions</label>
+	</div>
+	<button type="submit" class="btn ficha-btn">Create Application</button>
+</form>

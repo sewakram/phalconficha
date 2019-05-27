@@ -1,0 +1,543 @@
+{{ content() }}
+
+<style type="text/css">
+.dataTables_filter {
+   float: left !important;
+   margin-left: 200px;
+}
+</style>
+<section class="application-wrapper invoice-bg-wrap">
+    <div class="applicationheadtab">
+      	<div class="app-header row plain-color">
+          	<div class="col-xs-12 col-sm-4 col-md-4">
+	            <h1 class="app-title"><?=$t->_("invoices_payments"); ?></h1>
+	            <h5 class="app-desc"><?=$t->_("invoices_payments_sub_heading"); ?></h5>
+          	</div>
+          	<div class="col-xs-12 col-sm-8 col-md-8 main-app-point">
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <span class="down-arrow-img"></span>
+                                <span class="user-name"><?php echo ucfirst($loggedInUser->fname)." ".ucfirst($loggedInUser->lname[0]).".";?></span>
+                                <span class="user-img-wrapp"><img class="profile-icon" src="/images/82092abcffa42dae1d948bb7bed4bb01139322c4.png" /></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <div class="navbar-login">
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <p class="text-center">
+                                                    <img class="profilepi" src="/images/82092abcffa42dae1d948bb7bed4bb01139322c4.png" />
+                                                </p>
+                                            </div>
+                                            <div class="col-lg-8">
+                                                <p class="text-left"><strong><?php echo ucfirst($loggedInUser->fname)." ".ucfirst($loggedInUser->lname);?></strong></p>
+                                                <p class="text-left small"><?=$loggedInUser->email;?></p>
+                                                <p class="text-left">
+                                                    <a href="/account/index" class="btn btn-primary btn-block btn-sm update-btn"><?=$t->_("update_profile"); ?></a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <div class="navbar-login navbar-login-session">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <p><a href="/session/end" class="btn btn-danger btn-block log-btn"><?=$t->_("log_out"); ?></a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+         	</div>
+      	</div>
+    </div>
+    <div class="clearfix"></div>
+	<link rel="stylesheet" href="<?=$this->url->get("js/DataTables/DataTables-1.10.18/css/jquery.dataTables.min.css");?>" />
+	<link rel="stylesheet" href="<?=$this->url->get("js/DataTables/buttons.dataTables.min.css");?>" />
+	<script type="text/javascript" src="<?=$this->url->get("js/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js");?>"></script>
+	<script type="text/javascript" src="<?=$this->url->get("js/DataTables/dataTables.buttons.min.js");?>"></script>
+	<script type="text/javascript" src="<?=$this->url->get("js/DataTables/buttons.print.min.js");?>"></script>
+	<script type="text/javascript" src="<?=$this->url->get("js/DataTables/dataTables.select.min.js");?>"></script>
+
+	<div class="container payment-table">
+		<div class="tab-content invoice-top">
+			<div id="All" class="tab-pane fade in active">
+			    <table id="allinvoices" class="invoice" cellspacing="0" width="100%">
+			    	<div class="col-lg-12 payment-table-tab">
+						<div class="col-md-4">
+							<ul class="nav nav-tabs">
+								<li class="active"><a data-toggle="tab" href="#All"><?=$t->_("All"); ?></a></li>
+								<li><a data-toggle="tab" href="#Paid"><?=$t->_("Paid"); ?></a></li>
+								<li><a data-toggle="tab" href="#Due"><?=$t->_("Due"); ?></a></li>
+							</ul>
+						</div>
+				    </div>
+			    	<div class="pull-right invoice-count">
+			    		<span class="invoice-counter"><?php echo count($invoiceData);?></span>
+			    		<div class="clearfix"></div>
+			    		<span class="invoice-text"><?=$t->_("Invoices"); ?></span>
+			    	</div>
+			        <thead>
+						<tr>
+							<th> <label class="container-check" id="labinvo"><?=$t->_("Invoice"); ?><input type="checkbox" id="chkinvo"><span class="checkmark"></span>
+                               </label></th>
+							<th>
+								<label class="container-check"><?=$t->_("Description");?><input type="checkbox"><span class="checkmark"></span></label>
+                            </th>
+							<th>
+								<label class="container-check" id="labbill"><?=$t->_("bill_date");?><input type="checkbox" id="chkbill"><span class="checkmark"></span></label>
+                            </th>
+							<th>
+								<label class="container-check" id="labamt"><?=$t->_("Amount");?><input type="checkbox" id="chkamt"><span class="checkmark"></span></label>
+                           </th>
+							<th>
+								<i class="fa fa-bars" aria-hidden="true"></i>
+                           </th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php 
+							foreach ($invoiceData as $key) {
+								?>
+								<?php 
+									if ($key['status'] == 'Paid') {
+										echo '<tr class="paidInvoiceRow">';
+									} 
+									elseif ($key['status'] == 'Due') {
+										echo '<tr class="dueInvoiceRow">';
+									}
+								?>
+									<td><?=$key['invoice_no'];?></td>
+									<td><?=$key['description'];?></td>
+									<td>
+										<?php 
+											// echo date_format($key->timestamp, 'Y-m-d H:i:s');
+											$time=strtotime($key['timestamp']);
+											echo $monthdate=date("F d, Y",$time);
+											// $year=date("Y",$time);
+										?>
+									</td>
+									<td><?='$'.$key['amount'];?></td>
+									<td>
+										<?php if ($key['status'] == 'Paid') { ?>
+											<a href="{{url('application/export')}}"><span id="<?='inv-id-'.$key['id'];?>" class="glyphicon glyphicon-download-alt"></span></a>
+										<?php } elseif ($key['status'] == 'Due') { ?>
+											<button class="btn btn-ficha"><?=$t->_("pay_invoice_now"); ?><i class="fa fa-arrow-right"></i></button>
+										<?php } ?>
+									</td>
+								</tr>
+								<?php
+							}
+						?>						
+					</tbody>
+				</table>
+			</div>
+			<div id="Paid" class="tab-pane fade">
+			    <table id="paidinvoices" class="invoice" cellspacing="0" width="100%">
+		    		<div class="col-lg-12 payment-table-tab">
+						<div class="col-md-4">
+							<ul class="nav nav-tabs">
+								<li><a data-toggle="tab" href="#All"><?=$t->_("All"); ?></a></li>
+								<li class="active"><a data-toggle="tab" href="#Paid"><?=$t->_("Paid"); ?></a></li>
+								<li><a data-toggle="tab" href="#Due"><?=$t->_("Due"); ?></a></li>
+							</ul>
+						</div>
+				    </div>
+			    	<div class="pull-right invoice-count">
+			    		<span class="invoice-counter"><?php echo count($invoicePaidList);?></span>
+			    		<div class="clearfix"></div>
+			    		<span class="invoice-text"><?=$t->_("Invoices"); ?></span>
+			    	</div>
+					<thead>
+						<tr>
+							<th> <label class="container-check" id="labinvopaid"><?=$t->_("Invoice"); ?>
+                                  <input type="checkbox" id="chkinvopaid">
+                                    <span class="checkmark"></span>
+                               </label></th>
+							<th>
+							  <label class="container-check"><?=$t->_("Description"); ?>
+                                  <input type="checkbox">
+                                    <span class="checkmark"></span>
+                               </label>
+                            </th>
+							<th>
+							  <label class="container-check" id="labbillpaid"><?=$t->_("bill_date"); ?>
+                                  <input type="checkbox" id="chkbillpaid">
+                                    <span class="checkmark"></span>
+                               </label>
+                            </th>
+							<th>
+							   <label class="container-check" id="labamtpaid"><?=$t->_("Amount"); ?>
+                                  <input type="checkbox" id="chkamtpaid">
+                                    <span class="checkmark"></span>
+                               </label>
+                           </th>
+							<th>
+								<i class="fa fa-bars" aria-hidden="true"></i>
+                                  
+                           </th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php 
+							foreach ($invoicePaidList as $key) {
+								?>
+								<?php 
+									if ($key['status'] == 'Paid') {
+										echo '<tr class="paidInvoiceRow">';
+									} 
+									elseif ($key['status'] == 'Due') {
+										echo '<tr class="dueInvoiceRow">';
+									}
+								?>
+									<td><?=$key['invoice_no'];?></td>
+									<td><?=$key['description'];?></td>
+									<td>
+										<?php 
+											// echo date_format($key->timestamp, 'Y-m-d H:i:s');
+											$time=strtotime($key['timestamp']);
+											echo $monthdate=date("F d, Y",$time);
+											// $year=date("Y",$time);
+										?>
+									</td>
+									<td><?='$'.$key['amount'];?></td>
+									<td>
+										<?php if ($key['status'] == 'Paid') { ?>
+											<a href="{{url('application/export')}}"><span id="<?='inv-id-'.$key['id'];?>" class="glyphicon glyphicon-download-alt"></span></a>
+										<?php } elseif ($key['status'] == 'Due') { ?>
+											<button class="btn btn-ficha"><?=$t->_("pay_invoice_now"); ?><i class="fa fa-arrow-right"></i></button>
+										<?php } ?>
+									</td>
+								</tr>
+								<?php
+							}
+						 ?>						
+					</tbody>
+				</table>
+			</div>
+			<div id="Due" class="tab-pane fade">
+			    <table id="dueinvoices" class="invoice" cellspacing="0" width="100%">
+		    		<div class="col-lg-12 payment-table-tab">
+						<div class="col-md-4">
+							<ul class="nav nav-tabs">
+								<li><a data-toggle="tab" href="#All"><?=$t->_("All"); ?></a></li>
+								<li><a data-toggle="tab" href="#Paid"><?=$t->_("Paid"); ?></a></li>
+								<li class="active"><a data-toggle="tab" href="#Due"><?=$t->_("Due"); ?></a></li>
+							</ul>
+						</div>
+				    </div>
+			    	<div class="pull-right invoice-count">
+			    		<span class="invoice-counter"><?php echo count($invoiceDueList);?></span>
+			    		<div class="clearfix"></div>
+			    		<span class="invoice-text"><?=$t->_("Invoices"); ?></span>
+			    	</div>
+					<thead>
+						<tr>
+							<th> <label class="container-check" id="labinvodue"><?=$t->_("Invoice"); ?>
+                                  <input type="checkbox" id="chkinvodue">
+                                    <span class="checkmark"></span>
+                               </label></th>
+							<th>
+							  <label class="container-check"><?=$t->_("Description"); ?>
+                                  <input type="checkbox">
+                                    <span class="checkmark"></span>
+                               </label>
+                            </th>
+							<th>
+							  <label class="container-check" id="labbilldue"><?=$t->_("bill_date"); ?>
+                                  <input type="checkbox" id="chkbilldue">
+                                    <span class="checkmark"></span>
+                               </label>
+                            </th>
+							<th>
+							   <label class="container-check" id="labamtdue"><?=$t->_("Amount"); ?>
+                                  <input type="checkbox" id="chkamtdue">
+                                    <span class="checkmark"></span>
+                               </label>
+                           </th>
+							<th>
+								<i class="fa fa-bars" aria-hidden="true"></i>
+                                  
+                           </th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php 
+							foreach ($invoiceDueList as $key) {
+								?>
+								<?php 
+									if ($key['status'] == 'Paid') {
+										echo '<tr class="paidInvoiceRow">';
+									} 
+									elseif ($key['status'] == 'Due') {
+										echo '<tr class="dueInvoiceRow">';
+									}
+								?>
+									<td><?=$key['invoice_no'];?></td>
+									<td><?=$key['description'];?></td>
+									<td>
+										<?php 
+											// echo date_format($key->timestamp, 'Y-m-d H:i:s');
+											$time=strtotime($key['timestamp']);
+											echo $monthdate=date("F d, Y",$time);
+											// $year=date("Y",$time);
+										?>
+									</td>
+									<td><?='$'.$key['amount'];?></td>
+									<td>
+										<?php if ($key['status'] == 'Paid') { ?>
+											<a href="{{url('application/export')}}"><span id="<?='inv-id-'.$key['id'];?>" class="glyphicon glyphicon-download-alt"></span></a>
+										<?php } elseif ($key['status'] == 'Due') { ?>
+											<button class="btn btn-ficha"><?=$t->_("pay_invoice_now"); ?><i class="fa fa-arrow-right"></i></button>
+										<?php } ?>
+									</td>
+								</tr>
+								<?php
+							}
+						 ?>						
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+
+<div class="container payment-table">
+	
+
+								 <!--New Responsive table layout start-->	
+								<!--  <div class="invoice-tab">
+								 <div class="invoice-tab-header">
+								      <div class="tab-header-left">
+								                                  <ul class="tabs">
+								                                    <li class="tab-link current" data-tab="tab-1">All</li>
+								                                    <li class="tab-link" data-tab="tab-2">Paid</li>
+								                                    <li class="tab-link" data-tab="tab-3">Due</li>
+								                                  </ul>
+								      </div>
+								      <div class="tab-header-middle">
+								                                    <input type="text" name="Searchcontent" id="Search" class="tab-serach-input" placeholder="Search for an invoice">
+								                                    <i class="material-icons tab-search-icon">search</i>
+								      </div>
+								                                 <div class="tab-header-right">
+								                                    <h4>5</h4>
+								                                    <p>Invoices</p>
+								 </div>
+								</div> -->
+                               <!-- Tab panes -->
+                               <!--  <div id="tab-1" class="tab-content current">
+                                  <div class="res-table">
+                                <table>
+                                  <thead>
+                                    <tr>
+                                      <th scope="col"><label class="container-check">Invoice<input type="checkbox"><span class="checkmark"></span></label></th>
+                                      <th scope="col"><label class="container-check">Description<input type="checkbox"><span class="checkmark"></span></label></th>
+                                      <th scope="col"><label class="container-check">Bill Date<input type="checkbox"><span class="checkmark"></span></label></th>
+                                      <th scope="col"><label class="container-check">Amount<input type="checkbox"><span class="checkmark"></span></label></th>
+                                      <th scope="col"><i class="material-icons">menu</i></th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <td data-label="Invoice">ID2018072214408</td>
+                                      <td data-label="Description">Pro Membership monthly charge</td>
+                                      <td data-label="Bill Date">June 19, 2018</td>
+                                      <td data-label="Amount">$25.00</td>
+                                      <td data-label="button"><button class="btn btn-ficha">Pay invoice now<i class="fa fa-arrow-right"></i></button></td>
+                                    </tr>
+                                     <tr>
+                                      <td scope="row" data-label="Invoice">ID2018072214408</td>
+                                      <td data-label="Description">Pro Membership monthly charge</td>
+                                      <td data-label="Bill Date">June 19, 2018</td>
+                                      <td data-label="Amount">$25.00</td>
+                                       <td data-label="button"><button class="btn btn-ficha">Pay invoice now<i class="fa fa-arrow-right"></i></button></td>
+                                    </tr>
+                                      <tr>
+                                      <td scope="row" data-label="Invoice">ID2018072214408</td>
+                                      <td data-label="Description">Pro Membership monthly charge</td>
+                                      <td data-label="Bill Date">June 19, 2018</td>
+                                      <td data-label="Amount">$25.00</td>
+                                       <td data-label="button"><button class="btn btn-ficha">Pay invoice now<i class="fa fa-arrow-right"></i></button></td>
+                                    </tr>
+                                     <tr>
+                                      <td scope="row" data-label="Invoice">ID2018072214408</td>
+                                      <td data-label="Description">Pro Membership monthly charge</td>
+                                      <td data-label="Bill Date">June 19, 2018</td>
+                                      <td data-label="Amount">$25.00</td>
+                                      <td data-label="button"><button class="btn btn-ficha">Pay invoice now<i class="fa fa-arrow-right"></i></button></td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                <div class="pagination-wrap">
+                                    <div class="pagination-wrapper">
+                                         <div class="pagination-number">
+                                              <ul class="pagination">
+                                                <li class="page-item"><a class="page-link" href="#"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a></li>
+                                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                                <li class="page-item"><a class="page-link" href="#"><i class="fa fa-angle-double-right" aria-hidden="true"></i></a></li>
+                                              </ul>
+                                      </div>
+                                      <div class="pagination-eye-btn">
+                                        <button class="btn"><i class="material-icons">visibility_off</i></button>
+                                      </div>
+                                    <div class="pagination-box">
+                                      <select class="pagination-dropdown">
+                                          <option value="5">5</option>
+                                          <option value="10">10</option>
+                                          <option value="15">15</option>
+                                          <option value="20">20</option>
+                                      </select>
+                                    </div>
+                                     
+                                  </div>                                
+                                </div>
+                                  </div>  -->
+                                  <!--res table-->
+                              <!--   </div>
+                                <div id="tab-2" class="tab-content">
+                                    2
+                                </div>
+                                <div id="tab-3" class="tab-content">
+                                    3
+                                </div>                              
+                              </div> -->
+                              <!---New Responsive table layout End-->
+
+
+
+
+</div>
+
+
+
+
+</section>
+ <!--tab script-->
+<!-- <script>
+    $(document).ready(function(){
+    
+    $('ul.tabs li').click(function(){
+        var tab_id = $(this).attr('data-tab');
+
+        $('ul.tabs li').removeClass('current');
+        $('.tab-content').removeClass('current');
+
+        $(this).addClass('current');
+        $("#"+tab_id).addClass('current');
+    })})
+</script> -->
+ <!--tab script end-->
+
+
+<script type="text/javascript">
+		
+	function applyDataTable(){
+	 	$('#allinvoices').DataTable({
+			dom: '<"top"f>rt<"bottom"lp><"clear">',
+			select: true,
+			"pageLength": 5,
+			"oLanguage": { "sSearch": "<i class='fa fa-search search-invoice'></i>", "sLengthMenu": "_MENU_", "oPaginate": { "sNext": "<i class='fa fa-fw fa-angle-double-right'>", "sPrevious": "<i class='fa fa-fw fa-angle-double-left'>"  } },    
+			"lengthMenu": [[5, 10, 20, 50, 100, -1], [5, 10, 20, 50, 100, "All"]],
+			responsive: true,
+		});
+
+		$('#paidinvoices').DataTable({
+			dom: '<"top"f>rt<"bottom"lp><"clear">',
+			select: true,
+			"pageLength": 5,
+			"oLanguage": { "sSearch": "<i class='fa fa-search search-invoice'></i>", "sLengthMenu": "_MENU_", "oPaginate": { "sNext": "<i class='fa fa-fw fa-angle-double-right'>", "sPrevious": "<i class='fa fa-fw fa-angle-double-left'>"  } },    
+			"lengthMenu": [[5, 10, 20, 50, 100, -1], [5, 10, 20, 50, 100, "All"]],
+			
+						
+		});
+		///////////////
+		// $.fn.dataTable.ext.order['dom-checkbox'] = function  ( settings, col )
+		// {
+		// return this.api().column(col,{order:'index'}).nodes().map( function ( th, i ) {
+		// return $('input',th).prop('checked') ? '1' : '0';
+		// } );
+		// }
+		
+		///////////////
+		$('#dueinvoices').DataTable({
+			dom: '<"top"f>rt<"bottom"lp><"clear">',
+			select: true,
+			"pageLength": 5,
+			"oLanguage": { "sSearch": "<i class='fa fa-search search-invoice'></i>", "sLengthMenu": "_MENU_", "oPaginate": { "sNext": "<i class='fa fa-fw fa-angle-double-right'>", "sPrevious": "<i class='fa fa-fw fa-angle-double-left'>"  } },    
+			"lengthMenu": [[5, 10, 20, 50, 100, -1], [5, 10, 20, 50, 100, "All"]],
+		});
+	}
+
+	$(document).ready(function() {
+
+		applyDataTable();
+		$("input[type='search']").attr("placeholder", "Search for an invoice");
+
+		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+			var target = this.href.split('#');
+			$('.nav a').filter('a[href="#'+target[1]+'"]').tab('show');
+		})
+
+		/*sorting for all start*/
+	$("#chkinvo").click(function() {
+	$("#labinvo").trigger('click', {
+	})
+	});
+
+	$("#chkbill").click(function() {
+	$("#labbill").trigger('click', {
+	})
+	});
+
+	$("#chkamt").click(function() {
+	$("#labamt").trigger('click', {
+	//nonUI : true
+	})
+	});
+	/*sorting for all end*/
+
+	/*sorting for paid start*/
+
+	$("#chkinvopaid").click(function() {
+	$("#labinvopaid").trigger('click', {
+	})
+	});
+
+	$("#chkbillpaid").click(function() {
+	$("#labbillpaid").trigger('click', {
+	})
+	});
+	
+	$("#chkamtpaid").click(function() {
+	$("#labamtpaid").trigger('click', {
+	})
+	});
+	/*sorting for paid end*/
+
+	/*sorting for due start*/
+
+	$("#chkinvodue").click(function() {
+	$("#labinvodue").trigger('click', {
+	})
+	});
+
+	$("#chkbilldue").click(function() {
+	$("#labbilldue").trigger('click', {
+	})
+	});
+
+	$("#chkamtdue").click(function() {
+	$("#labamtdue").trigger('click', {
+	})
+	});
+	/*sorting for due end*/
+	});
+</script>

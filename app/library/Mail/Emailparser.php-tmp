@@ -1,0 +1,46 @@
+<?php
+use Phalcon\Mvc\User\Component;
+
+class EmailParser extends Component {
+	// class EmailParser {
+
+	protected $_openingTag = '{{';
+	protected $_closingTag = '}}';
+	public $_emailValues   = null;
+	public $_emailHtml     = null;
+
+	public function __construct() {
+
+	}
+
+	public function _get_mail_template($template_name = 'welcome') {
+		echo "string";
+		$mail_template = new EmailTemplate();
+		$res           = $mail_template->get($template_name);
+		// echo "<pre>";
+		$mail_template_obj = new stdClass();
+		foreach ($res as $value) {
+			$_index                     = $value->title;
+			$mail_template_obj->$_index = $value;
+		}
+		$_html = $mail_template_obj->header->body;
+		$_html .= $mail_template_obj->$template_name->body;
+		$_html .= $mail_template_obj->footer->body;
+		echo $_html;
+		// print_r($res);
+		die();
+		// SELECT * FROM email_template WHERE title IN ('header', 'password_reset', 'footer')
+
+	}
+
+	public function render_template($template_name, $valuse_arr) {
+		$this->_emailHtml   = $this->_get_mail_template($template_name);
+		$this->_emailValues = $valuse_arr;
+		foreach ($this->_emailValues as $key => $value) {
+			$html = str_replace($this->_openingTag.$key.$this->_closingTag, $value, $html);
+		}
+		$this->_emailHtml = $html;
+		// return $html;
+		$this->MsgHTML($html);
+	}
+}

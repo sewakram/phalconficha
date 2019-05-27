@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{margin:0px;background-color:#d8d8d8}
+.mail-row{background-color:#d8d8d8}/*position: absolute;left: 50%;top: 0;transform: translate(-50%);*/
+.mail-offset{display: block;margin:0 auto;width: 100%;max-width:600px;height: 50%;padding-top: 30px;padding-bottom: 30px;}
+.mail-wrapper-bg {background:#FFF;padding: 40px 60px;margin-top: 30px;margin-bottom: 10px;border-radius: 5px;border: 1px solid #d8d8d8;}
+.mail-wrapper-bg .mail-form h4 {font-size: 24px;font-weight: bold;color: #424c5f;margin-bottom: 14px;}
+.mail-wrapper-bg .mail-form label {font-size: 14px;color: #acb0b8;margin-bottom: 20px;}
+.mail-wrapper-bg .mail-form .form-group label.mail-des {color: #4d4d4d;line-height: 2;font-size: 14px;display: block;margin: 30px 0px;}
+.mail-wrapper-bg .mail-form button.mail-btn {position:relative;padding-left: 30px;padding-right: 30px;padding-top: 6px;padding-bottom: 6px;display: block;margin: 0px auto;color: #fff;background-color: #FF7C00;border-color: #FF7C00;border-radius: 4px;-webkit-border-radius: 4px;font-family: inherit;font-size: 14px;border: 0 none;outline: 0 none;transition: 0.3s;line-height: 2; font-weight: 600; letter-spacing: 0.2px; }
+.mail-wrapper-bg .mail-form button.mail-btn i.material-icons {position: absolute;right: 0;top: 0;font-size: 18px;padding: 11px;}
+.mail-wrapper-bg .mail-bg-logo{padding:0 50px;}
+.mail-wrapper-bg .mail-bg-logo img {display: block;margin: auto;padding-top: 20px;width:100%;}
+.mail-social-icon ul{padding:0;}
+.mail-social-icon ul li {display: inline-block;padding:0;margin: 0 10px;}
+.mail-social-icon ul li.fst-child{margin-left:0;}
+/*.mail-social-icon ul li:first-child{margin-left:0;}
+.mail-social-icon ul li:last-child{margin:0 0 0 5px} Not Work in Email */ 
+.mail-social-icon ul li img{height:30px;}
+.mail-wrapper-bg .mail-form button.mail-btn img {padding: 6px 2px;vertical-align: middle;height: 20px;}
+.mail-wrapper-bg .mail-form a{text-decoration: none !important;}
+/*position:absolute;top:0;right:0;height:20px;padding:10px 24px;*/
+
+@media only screen and (max-width: 768px) {
+  .mail-row{padding:0 15px;}
+  .mail-offset{width: 100%;}
+  .mail-wrapper-bg{padding:40px;}
+  .mail-wrapper-bg .mail-bg-logo{padding:0;}
+
+}
+</style> 
+</head>
+<body>
+<div class="mail-row">
+        <div class="mail-offset">
+            <div class="mail-wrapper-bg">
+            <div class="mail-logo">
+               <img src="http://dev.fichapp.co/images/logo1.png">
+            </div>
+                <div class="mail-form">
+                    <div class="form-group">
+                        <label ></label>
+                    </div>
+                    <div class="form-group">
+                        <h3>Hi name,</h3>
+                        
+                    </div>
+                    <div class="form-group">
+
+                        <label class="mail-des">Your password for Ficha has been updated successfully. You can now login again to Ficha with your new password.
+                        </label>
+                        
+                    </div>
+                        <a href="login_url" >
+                            <button class="mail-btn">Go To Ficha<img src="http://dev.fichapp.co/images/mail-btn-arrow.png"></button>
+                        </a>
+                </div>
+                <div class="mail-bg-logo">
+                <img src="http://dev.fichapp.co/images/mail-img-welcome.png">
+                </div>
+         </div>
+          <div class="mail-social-icon">
+             <ul>
+                <li class="fst-child">  <img src="http://dev.fichapp.co/images/twitter-icon.png"></li>
+                  <li>  <img src="http://dev.fichapp.co/images/in-icon.png"></li>
+                   <li>  <img src="http://dev.fichapp.co/images/facebook-icon.png"></li>
+             </ul>
+         </div>
+        </div>
+</div> 
+
+</body>
+</html>
